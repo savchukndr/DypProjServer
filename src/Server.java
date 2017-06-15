@@ -8,7 +8,10 @@ import java.net.Socket;
 import java.util.Date;
 
 /**
- * Created by savch on 14.06.2017.
+ * Created by Andrii Savchuk on 14.06.2017.
+ * All rights are reserved.
+ * If you will have any cuastion, please
+ * contact via email (savchukndr@gmail.com)
  */
 public class Server {
 
@@ -17,6 +20,7 @@ public class Server {
 
         ServerSocket socket = new ServerSocket(port);
         System.out.println("Server started:");
+        System.out.println();
         Socket clientSocket = socket.accept();       //This is blocking. It will wait.
         DataInputStream inStream = new DataInputStream(clientSocket.getInputStream());
         int length = inStream.readInt();
@@ -30,12 +34,27 @@ public class Server {
             BufferedWriter out = new BufferedWriter(new FileWriter("C:\\test\\test.txt"));
             try {
                 JSONObject jsonObj = new JSONObject(s);
-                out.write(jsonObj.getString("image"));
-                byte[] decodedString = new sun.misc.BASE64Decoder().decodeBuffer(jsonObj.getString("image"));
-                File of = new File("C:\\test\\yourFile.jpeg");
-                FileOutputStream osf = new FileOutputStream(of);
-                osf.write(decodedString);
-                osf.flush();
+                if (!jsonObj.getString("image").equals("")) {
+                    out.write(jsonObj.getString("image"));
+                    byte[] decodedString = new sun.misc.BASE64Decoder().decodeBuffer(jsonObj.getString("image"));
+                    File of = new File("C:\\test\\yourFile.jpeg");
+                    FileOutputStream osf = new FileOutputStream(of);
+                    osf.write(decodedString);
+                    osf.flush();
+                }
+                System.out.println("login: " + jsonObj.getString("login"));
+                System.out.println("name: " + jsonObj.getString("name"));
+                System.out.println("localization: " + jsonObj.getString("localiztion"));
+                if (jsonObj.getString("image").equals("")){
+                    System.out.println("commente: no comment");
+                }else {
+                    System.out.println("comment: " + jsonObj.getString("comment"));
+                }
+                if (jsonObj.getString("image").equals("")){
+                    System.out.println("image: no image");
+                }else {
+                    System.out.println("photo path: C:\\test\\yourFile.jpeg");
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -47,6 +66,7 @@ public class Server {
 
         }
 
+        System.out.println();
         System.out.println("Server stoped.");
         clientSocket.close();
         socket.close();
